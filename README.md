@@ -66,7 +66,7 @@ GitHub Link:
 https://github.com/ST10487772/MAST5112_Part-2/tree/main
 
 YouTube Video:
-👉  
+👉  https://www.youtube.com/watch?v=xpC5lL7fHcU
 
 Technologies Used 
 
