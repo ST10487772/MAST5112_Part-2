@@ -79,3 +79,25 @@ Technologies Used
 • Context API (for state management) 
 
 • Expo (for development)
+
+Reference List: 
+
+Expo.dev, 2024. Getting started with Expo in React Native. [online] Available at: https://docs.expo.dev/get-started/installation/ [Accessed 6 October 2025]. 
+
+React Native, 2024. React Native documentation. [online] Available at: https://reactnative.dev/docs/getting-started [Accessed 6 October 2025]. 
+
+W3Schools, 2024. React Native tutorial. [online] Available at: https://www.w3schools.com/react/react_native_intro.asp [Accessed 6 October 2025]. 
+
+Microsoft, 2024. Using Visual Studio Code for React Native development. [online] Available at: https://code.visualstudio.com/docs/reactnative/getting-started [Accessed 6 October 2025]. 
+
+Stack Overflow, 2024. Common React Native errors and troubleshooting tips. [online] Available at: https://stackoverflow.com/questions/tagged/react-native [Accessed 6 October 2025]. 
+
+Genymotion, 2024. Using Genymotion as an Android emulator. [online] Available at: https://www.genymotion.com/ [Accessed 6 October 2025]. 
+
+BlueStacks, 2024. How to install and run Expo Go on BlueStacks. [online] Available at: https://support.bluestacks.com/ [Accessed 6 October 2025]. 
+
+Packt Publishing, 2023. React Native Cookbook: Bringing mobile development to life. 2nd ed. Birmingham: Packt Publishing. 
+
+Mozilla Developer Network (MDN), 2024. JavaScript fundamentals for React Native developers. [online] Available at: https://developer.mozilla.org/en-US/docs/Web/JavaScript [Accessed 6 October 2025]. 
+
+ 
