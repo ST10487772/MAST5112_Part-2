@@ -49,7 +49,7 @@ ChefMenu/
 
 1. Clone the repository: 
 
-   git clone https:  
+   git clone https:  https://github.com/ST10487772/MAST5112_Part-2/tree/main
    cd ChefMenu 
 
 2. Install dependencies (Expo recommended): 
@@ -60,12 +60,12 @@ ChefMenu/
 
 3. Run the app (Expo): 
 
-   npx expo start 
+   npx expo start
 
-YouTube Video: 
+GitHub Link:
+https://github.com/ST10487772/MAST5112_Part-2/tree/main
 
-A screen recording of the app features (adding, filtering, removing items) is available here: 
-
+YouTube Video:
 👉  
 
 Technologies Used 
