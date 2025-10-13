@@ -1,32 +1,46 @@
-import React, { useState } from 'react';
-import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
-import { useMenu } from '../context/MenuContext';
-import { COURSES } from '../data/courses';
+// src/screens/FilterScreen.tsx
+import React, { useState, useContext } from "react";
+import { View, Text, FlatList, StyleSheet, Platform } from "react-native";
+import { Picker } from "@react-native-picker/picker";
+import { MenuContext } from "../context/MenuContext";
+import { courses } from "../data/courses";
 
-const FilterScreen: React.FC = () => {
-  const { items } = useMenu();
-  const [selected, setSelected] = useState<string>('All');
-
-  const filtered =
-    selected === 'All' ? items : items.filter(i => i.course.id === selected);
+const FilterScreen = () => {
+  const { menu } = useContext(MenuContext);
+  const [selectedCourse, setSelectedCourse] = useState(courses[0]);
+  const filtered = menu.filter((item) => item.course === selectedCourse);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Filter by Course</Text>
-      <View style={styles.row}>
-        <Button title="All" onPress={() => setSelected('All')} />
-        {COURSES.map(c => (
-          <Button key={c.id} title={c.name} onPress={() => setSelected(c.id)} />
-        ))}
-      </View>
-
+      {Platform.OS === 'web' ? (
+        <select
+          value={selectedCourse}
+          onChange={e => setSelectedCourse(e.target.value)}
+          style={{ ...styles.input, height: 40 }}
+        >
+          {courses.map((c) => (
+            <option value={c} key={c}>{c}</option>
+          ))}
+        </select>
+      ) : (
+        <Picker
+          selectedValue={selectedCourse}
+          onValueChange={(itemValue: string) => setSelectedCourse(itemValue)}
+          style={styles.input}
+        >
+          {courses.map((c) => (
+            <Picker.Item label={c} value={c} key={c} />
+          ))}
+        </Picker>
+      )}
       <FlatList
         data={filtered}
-        keyExtractor={i => i.id}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.item}>
-            <Text>{item.name} — R {item.price.toFixed(2)}</Text>
+          <View style={styles.card}>
+            <Text style={styles.name}>{item.name}</Text>
             <Text>{item.description}</Text>
+            <Text>R {item.price}</Text>
           </View>
         )}
       />
@@ -35,10 +49,11 @@ const FilterScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { padding: 16 },
-  title: { fontSize: 18, fontWeight: 'bold' },
-  row: { flexDirection: 'row', marginVertical: 10, justifyContent: 'space-around' },
-  item: { padding: 10, borderBottomWidth: 1, borderColor: '#ccc' },
+  container: { flex: 1, padding: 20, backgroundColor: "#fff" },
+  title: { fontSize: 22, fontWeight: "bold", marginBottom: 10 },
+  card: { backgroundColor: "#eee", padding: 10, marginVertical: 5, borderRadius: 8 },
+  input: { borderWidth: 1, borderColor: "#ccc", borderRadius: 5, marginBottom: 10 },
+  name: { fontWeight: "bold" },
 });
 
 export default FilterScreen;

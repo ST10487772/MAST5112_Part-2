@@ -1,116 +1,68 @@
 // src/screens/AddItemScreen.tsx
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { COURSES } from '../data/courses';
-import { useMenu } from '../context/MenuContext';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../App';
-import { Course } from '../types';
+import React, { useState, useContext } from "react";
+import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { Picker } from "@react-native-picker/picker";
+import { MenuContext } from "../context/MenuContext";
+import { courses } from "../data/courses";
 
-type Props = NativeStackScreenProps<RootStackParamList, 'AddItem'>;
+const AddItemScreen = ({ navigation }: any) => {
+  const { addMenuItem } = useContext(MenuContext);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [course, setCourse] = useState(courses[0]);
+  const [price, setPrice] = useState("");
 
-// Simple, safe id generator with crypto.randomUUID fallback when available
-const generateId = (): string => {
-  // prefer secure random UUID if runtime provides it
-  // (modern JS runtimes / newer RN may expose globalThis.crypto.randomUUID)
-  // otherwise fallback to a timestamp+random string
-  if (typeof globalThis?.crypto?.randomUUID === 'function') {
-    try {
-      return globalThis.crypto.randomUUID();
-    } catch (e) {
-      // fall through to fallback
+  const handleAdd = () => {
+    if (name && description && price) {
+      addMenuItem({ name, description, course, price: parseFloat(price) });
+      navigation.navigate("Home");
+    } else {
+      alert("Please fill in all fields");
     }
-  }
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-};
-
-const AddItemScreen: React.FC<Props> = ({ navigation }) => {
-  const { addItem } = useMenu();
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [course, setCourse] = useState<Course>(COURSES[0]);
-  const [price, setPrice] = useState('');
-
-  const onAdd = () => {
-    const parsed = parseFloat(price);
-    if (!name.trim()) {
-      Alert.alert('Error', 'Dish name is required');
-      return;
-    }
-    if (isNaN(parsed) || parsed <= 0) {
-      Alert.alert('Error', 'Enter a valid price');
-      return;
-    }
-
-    addItem({
-      id: generateId(),
-      name,
-      description,
-      course,
-      price: parsed,
-    });
-
-    setName('');
-    setDescription('');
-    setPrice('');
-    setCourse(COURSES[0]);
-    navigation.navigate('Home');
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Dish Name</Text>
+      <Text style={styles.title}>Add New Dish</Text>
+
       <TextInput
-        style={styles.input}
+        placeholder="Dish Name"
         value={name}
         onChangeText={setName}
-        placeholder="Enter dish name"
+        style={styles.input}
       />
 
-      <Text style={styles.label}>Description</Text>
       <TextInput
-        style={styles.input}
+        placeholder="Description"
         value={description}
         onChangeText={setDescription}
-        placeholder="Optional description"
+        style={styles.input}
       />
 
-      <Text style={styles.label}>Course</Text>
-      {COURSES.map((c) => (
-        <View key={c.id} style={{ marginVertical: 4 }}>
-          <Button
-            title={c.name + (course.id === c.id ? ' ✓' : '')}
-            onPress={() => setCourse(c)}
-          />
-        </View>
-      ))}
+      <Text>Course:</Text>
+  <Picker selectedValue={course} onValueChange={(v: string) => setCourse(v)} style={styles.input}>
+        {courses.map((c) => (
+          <Picker.Item label={c} value={c} key={c} />
+        ))}
+      </Picker>
 
-      <Text style={styles.label}>Price</Text>
       <TextInput
-        style={styles.input}
+        placeholder="Price (R)"
+        keyboardType="numeric"
         value={price}
         onChangeText={setPrice}
-        keyboardType="numeric"
-        placeholder="e.g. 89.99"
+        style={styles.input}
       />
 
-      <View style={{ marginTop: 16 }}>
-        <Button title="Add Item" onPress={onAdd} />
-      </View>
+      <Button title="Add Dish" onPress={handleAdd} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { padding: 16, flex: 1, backgroundColor: '#fff' },
-  label: { marginTop: 10, fontWeight: '600' },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 8,
-    borderRadius: 5,
-    marginTop: 5,
-  },
+  container: { flex: 1, padding: 20 },
+  title: { fontSize: 22, fontWeight: "bold", marginBottom: 10 },
+  input: { borderWidth: 1, borderColor: "#ccc", padding: 8, marginVertical: 5, borderRadius: 5 },
 });
 
 export default AddItemScreen;

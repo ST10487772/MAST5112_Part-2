@@ -1,12 +1,8 @@
-export interface Course {
-  id: string;
-  name: string;
-}
-
-export interface MenuItem {
+// src/types.ts
+export type MenuItem = {
   id: string;
   name: string;
   description: string;
-  course: Course;
+  course: string;
   price: number;
-}
+};

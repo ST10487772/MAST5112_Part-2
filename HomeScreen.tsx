@@ -1,115 +1,43 @@
-import React, { useMemo } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Button,
-  FlatList,
-  TouchableOpacity,
-} from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../App';
-import { useMenu } from '../context/MenuContext';
-import { COURSES } from '../data/courses';
+// src/screens/HomeScreen.tsx
+import React, { useContext } from "react";
+import { View, Text, FlatList, StyleSheet, Button } from "react-native";
+import { MenuContext } from "../context/MenuContext";
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
-
-const HomeScreen: React.FC<Props> = ({ navigation }) => {
-  const { items, removeItem } = useMenu();
-
-  const totalCount = items.length;
-
-  const avgByCourse = useMemo(() => {
-    const map: Record<string, { sum: number; count: number }> = {};
-
-    // Normalize course names
-    COURSES.forEach((c) => {
-      const courseName = typeof c === 'string' ? c : c.name;
-      map[courseName] = { sum: 0, count: 0 };
-    });
-
-    items.forEach((it) => {
-      if (!map[it.course]) map[it.course] = { sum: 0, count: 0 };
-      map[it.course].sum += it.price;
-      map[it.course].count += 1;
-    });
-
-    const out: Record<string, number> = {};
-    Object.keys(map).forEach((key) => {
-      const { sum, count } = map[key];
-      out[key] = count ? +(sum / count).toFixed(2) : 0;
-    });
-
-    return out;
-  }, [items]);
+const HomeScreen = ({ navigation }: any) => {
+  const { menu } = useContext(MenuContext);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Chef Menu</Text>
-
-      <View style={styles.buttons}>
-        <Button title="Add Item" onPress={() => navigation.navigate('AddItem')} />
-        <Button title="Filter" onPress={() => navigation.navigate('Filter')} />
-      </View>
-
-      <View style={styles.summary}>
-        <Text style={styles.summaryText}>Total items: {totalCount}</Text>
-        {COURSES.map((c, idx) => {
-          const courseName = typeof c === 'string' ? c : c.name;
-          return (
-            <Text key={idx} style={styles.summaryText}>
-              {courseName} avg: R {avgByCourse[courseName]?.toFixed(2) ?? '0.00'}
-            </Text>
-          );
-        })}
-      </View>
+      <Text style={styles.title}>🍽️ Chef Menu</Text>
+      <Text>Total Dishes: {menu.length}</Text>
 
       <FlatList
-        data={items}
-        keyExtractor={(i) => i.id}
+        data={menu}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.item}
-            onPress={() => navigation.navigate('ItemDetails', { id: item.id })}
-            onLongPress={() => removeItem(item.id)}
-          >
-            <Text style={styles.name}>
-              {item.name} — {item.course}
-            </Text>
-            <Text>R {item.price.toFixed(2)}</Text>
-            {item.description ? (
-              <Text style={styles.desc}>{item.description}</Text>
-            ) : null}
-          </TouchableOpacity>
+          <View style={styles.card}>
+            <Text style={styles.name}>{item.name}</Text>
+            <Text>{item.course}</Text>
+            <Text>{item.description}</Text>
+            <Text>R {item.price}</Text>
+          </View>
         )}
-        ListEmptyComponent={
-          <Text style={styles.empty}>No menu items yet. Add some!</Text>
-        }
       />
+
+      <View style={styles.buttons}>
+        <Button title="➕ Add Dish" onPress={() => navigation.navigate("AddItem")} />
+        <Button title="🔍 Filter Menu" onPress={() => navigation.navigate("Filter")} />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 10 },
-  buttons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 15,
-  },
-  summary: { marginBottom: 15 },
-  summaryText: { fontSize: 14, color: '#333' },
-  item: {
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    marginBottom: 10,
-    borderRadius: 5,
-  },
-  name: { fontWeight: '600', marginBottom: 4 },
-  desc: { color: '#666' },
-  empty: { textAlign: 'center', marginTop: 20, color: '#888' },
+  container: { flex: 1, padding: 20, backgroundColor: "#fff" },
+  title: { fontSize: 24, fontWeight: "bold", marginBottom: 10 },
+  card: { backgroundColor: "#f4f4f4", padding: 10, marginVertical: 5, borderRadius: 8 },
+  name: { fontWeight: "bold" },
+  buttons: { flexDirection: "row", justifyContent: "space-between", marginTop: 10 },
 });
 
 export default HomeScreen;

@@ -1,29 +1,39 @@
-import React, { createContext, useState, useContext } from 'react';
-import { MenuItem } from '../types';
+// src/context/MenuContext.tsx
+import React, { createContext, useState, ReactNode } from "react";
+import { MenuItem } from "../types";
+import { v4 as uuidv4 } from "uuid";
 
 type MenuContextType = {
-  items: MenuItem[];
-  addItem: (item: MenuItem) => void;
+  menu: MenuItem[];
+  addMenuItem: (item: Omit<MenuItem, "id">) => void;
   removeItem: (id: string) => void;
 };
 
-const MenuContext = createContext<MenuContextType | undefined>(undefined);
+export const MenuContext = createContext<MenuContextType>({
+  menu: [],
+  addMenuItem: () => {},
+  removeItem: () => {},
+});
 
-export const MenuProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [items, setItems] = useState<MenuItem[]>([]);
+export const MenuProvider = ({ children }: { children: ReactNode }) => {
+  const [menu, setMenu] = useState<MenuItem[]>([
+    { id: uuidv4(), name: "Tomato Soup", description: "Fresh homemade soup", course: "Starters", price: 50 },
+    { id: uuidv4(), name: "Grilled Steak", description: "Served with veggies", course: "Mains", price: 180 },
+    { id: uuidv4(), name: "Chocolate Cake", description: "Rich and moist", course: "Desserts", price: 70 },
+  ]);
 
-  const addItem = (item: MenuItem) => setItems(prev => [item, ...prev]);
-  const removeItem = (id: string) => setItems(prev => prev.filter(i => i.id !== id));
+  const addMenuItem = (item: Omit<MenuItem, "id">) => {
+    const newItem = { id: uuidv4(), ...item };
+    setMenu([...menu, newItem]);
+  };
+
+  const removeItem = (id: string) => {
+    setMenu(menu.filter((item) => item.id !== id));
+  };
 
   return (
-    <MenuContext.Provider value={{ items, addItem, removeItem }}>
+    <MenuContext.Provider value={{ menu, addMenuItem, removeItem }}>
       {children}
     </MenuContext.Provider>
   );
-};
-
-export const useMenu = () => {
-  const context = useContext(MenuContext);
-  if (!context) throw new Error('useMenu must be used within MenuProvider');
-  return context;
 };
